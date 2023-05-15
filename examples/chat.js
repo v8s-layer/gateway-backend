@@ -21,18 +21,22 @@ function chat(params) {
         })
     };
 
-    try {
-        fetch('https://api.openai.com/v1/chat/completions', requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                return data.choices[0].message.content;
-            })
-            .catch(err => console.log(err));
-    } catch (err) {
-        console.error(err);
-        return err;
-    }
+    return new Promise((resolve, reject) => {
+        try {
+            fetch('https://api.openai.com/v1/chat/completions', requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    resolve(data.choices[0].message.content);
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
+        } catch (err) {
+            console.error(err);
+            reject(err);
+        }
+    });
 }
 
 // Expose the function to be executed by the server
