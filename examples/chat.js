@@ -24,7 +24,10 @@ function chat(params) {
     try {
         fetch('https://api.openai.com/v1/chat/completions', requestOptions)
             .then(response => response.json())
-            .then(data => { return data; })
+            .then(data => {
+                console.log(data);
+                return data.choices[0].message.content;
+            })
             .catch(err => console.log(err));
     } catch (err) {
         console.error(err);
