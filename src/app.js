@@ -2,6 +2,12 @@ const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const { Script, createContext } = require('vm');
+
+let sandbox = {
+    console: console,
+    fetch: fetch
+};
+
 const app = express();
 
 // Use the body-parser middleware to parse JSON request bodies
@@ -19,7 +25,7 @@ app.post('/run', async (req, res) => {
         const response = await axios.get(url);
 
         // 2. Run the downloaded file's function with a timeout of 30 seconds
-        const context = createContext();
+        const context = createContext(sandbox);
         const script = new Script(response.data, { timeout: 30000 });
         script.runInContext(context);
 

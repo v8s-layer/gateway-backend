@@ -27,3 +27,9 @@ $ curl -X POST -H "Content-Type: application/json" -d '{"url":"https://raw.githu
 
 {"result":78.53981633974483}
 ```
+
+```bash
+$ curl -X POST -H "Content-Type: application/json" -d '{"url":"https://raw.githubusercontent.com/D3LAB-DAO/gateway-backend/main/examples/chat.js", "inputParameters": {"prompt": "Hello", "key": "<YOUR_API_KEY>"}}' http://localhost:3000/run
+
+{"result":"! How can I assist you today?"}
+```
