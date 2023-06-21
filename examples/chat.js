@@ -29,7 +29,7 @@ function chat(params) {
                     resolve(data.choices[0].message.content);
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 });
         } catch (err) {
