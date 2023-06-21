@@ -1,9 +1,12 @@
 const { readFileSync } = require('fs');
 const { Script, createContext } = require('vm');
+const { TeleBot } = require('telebot');
+
 
 let sandbox = {
+    require: require,
     console: console,
-    fetch: fetch
+    fetch: fetch,
 };
 
 async function run(file, inputs) {
@@ -23,12 +26,17 @@ async function run(file, inputs) {
     }
 }
 
-run('./examples/simple_addition.js', { "a": 5, "b": 3 })
+run(
+    './examples/simple_addition.js',
+    {
+        "a": 5,
+        "b": 3
+    }
+)
     .then((res) => {
         console.log(res);
         process.exit(0);
-    })
-    .catch((error) => {
+    }).catch((error) => {
         console.error(error);
         process.exit("1");
     });
