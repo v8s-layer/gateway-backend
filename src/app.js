@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { Script, createContext } = require('vm');
 
 let sandbox = {
+    require: require,
     console: console,
     fetch: fetch
 };
