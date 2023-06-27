@@ -1,57 +1,32 @@
-function telegrambot(bytecode) {
-    let offset = 0;
+function telegrambot(data) {
+    const ethers = require('ethers');
 
-    const parseUint256 = () => {
-        const uint256 = BigInt(`0x${bytecode.slice(offset, offset+64)}`);
-        offset += 64;
-        return uint256.toString();
-    };
+    const abiCoder = new ethers.utils.AbiCoder();
 
-    const parseInt256 = () => {
-        let int256 = BigInt(`0x${bytecode.slice(offset, offset+64)}`);
-        offset += 64;
-        if (int256 > BigInt("0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")) {
-            int256 -= BigInt("0x10000000000000000000000000000000000000000000000000000000000000000");
-        }
-        return int256.toString();
-    };
+    const decoded = abiCoder.decode(
+        [
+            'string',    // botKey
+            'int256',    // chatId
+            'string',    // symbol0
+            'string',    // symbol1
+            'uint256',   // amount0
+            'uint256',   // amount1
+            'uint256',   // decimals0
+            'uint256'    // decimals1
+        ],
+        data
+    );
 
-    const parseString = () => {
-        const length = Number(`0x${bytecode.slice(offset, offset+64)}`);
-        offset += 64;
-        const string = Buffer.from(bytecode.slice(offset, offset + length * 2), 'hex').toString('utf8');
-        offset += length * 2;
-        return string;
-    };
+    const botKey = decoded[0];
+    const chatId = decoded[1].toString();
+    const symbol0 = decoded[2] == "WFTM" ? "FTM" : "WFTM";
+    const symbol1 = decoded[3];
+    const amount0 = decoded[4].toString();
+    const amount1 = decoded[5].toString();
+    const decimals0 = decoded[6].toString();
+    const decimals1 = decoded[7].toString();
 
-    const botKey = parseString(); // First string
-    const chatId = parseInt256(); // First int256
-    const symbol0 = parseString(); // Second string
-    const symbol1 = parseString(); // Third string
-    const amount0 = parseUint256(); // First uint256
-    const amount1 = parseUint256(); // Second uint256
-    const decimals0 = parseUint256(); // Third uint256
-    const decimals1 = parseUint256(); // Fourth uint256
-
-    console.log("botKey: ", botKey);
-    console.log("chatId: ", chatId);
-    console.log("symbol0: ", symbol0);
-    console.log("symbol1: ", symbol1);
-    console.log("amount0: ", amount0);
-    console.log("amount1: ", amount1);
-    console.log("decimals0: ", decimals0);
-    console.log("decimals1: ", decimals1);
-
-    const msg = `
-botKey: ${botKey}
-chatId: ${chatId}
-symbol0: ${symbol0}
-symbol1: ${symbol1}
-amount0: ${amount0}
-amount1: ${amount1}
-decimals0: ${decimals0}
-decimals1: ${decimals1}
-    `;
+    const msg = `Swap ${amount0 / 10**decimals0} ${symbol0} to ${amount1 / 10**decimals1} ${symbol1}`;
 
     const TeleBot = require('telebot');
     const bot = new TeleBot(botKey);
