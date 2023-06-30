@@ -18,7 +18,8 @@ function telegrambot(data) {
     );
 
     const botKey = decoded[0];
-    const chatId = decoded[1].toString();
+    // const chatId = decoded[1].toString();
+    const chatId = "-1001927174633";
     const symbol0 = decoded[2] == "WFTM" ? "FTM" : "WFTM";
     const symbol1 = decoded[3];
     const amount0 = decoded[4].toString();
@@ -26,15 +27,21 @@ function telegrambot(data) {
     const decimals0 = decoded[6].toString();
     const decimals1 = decoded[7].toString();
 
-    const msg = `Swap ${amount0 / 10**decimals0} ${symbol0} to ${amount1 / 10**decimals1} ${symbol1}`;
+    const msg = `📣 Swap Event Detected! 📣
 
-    const TeleBot = require('telebot');
-    const bot = new TeleBot(botKey);
+Swapped ${amount0 / 10**decimals0} ${symbol0} for ${amount1 / 10**decimals1} ${symbol1}`;
+
+    const TeleBot = require('node-telegram-bot-api');
+    const bot = new TeleBot(botKey, {
+        polling: true
+    });
 
     return new Promise((resolve, reject) => {
         try {
 
-            bot.sendMessage(chatId, `${msg}`)
+            bot.sendMessage(chatId, `${msg}`, {
+                parse_mode: 'Markdown',
+            })
                 .then((response) => {
                     console.log('Ok:', response);
                     resolve(response);
